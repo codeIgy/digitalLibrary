@@ -1,0 +1,43 @@
+mat-card{
+    margin: auto;
+    width: 50%;
+    margin-top: 30px;
+}
+.image {
+    width: 100%;
+}
+
+.image img{
+    width: 100%;
+}
+mat-card{
+    margin: auto;
+    width: 50%;
+    margin-top: 30px;
+}
+mat-form-field{
+    margin: auto;
+    display: inline;
+}
+table{
+    margin: auto;
+    width: 80%;
+}
+td{
+    width: auto;
+}
+
+.App {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  
+  
+  
+  .flex-container {
+    display: flex;
+  }
+  

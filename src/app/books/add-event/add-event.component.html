@@ -1,0 +1,59 @@
+<mat-horizontal-stepper [linear]="true" #stepper>
+    <mat-step [completed]='valid()' >
+        <form [formGroup]="form">
+            <ng-template matStepLabel>Unesite podatke o dogadjaju</ng-template>
+            <mat-form-field>
+                <input type="text" matInput formControlName='title' placeholder="Naziv dogadjaja">
+                <mat-error *ngIf='form.get("title").invalid'>Unesite naziv dogadjaja</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input type="datetime-local" matInput formControlName='start' placeholder="Datum početka">
+                <br />
+            </mat-form-field>
+            <br/>
+                <mat-label>Sad:</mat-label>
+                <input type="checkbox" formControlName='now'>
+                <mat-error *ngIf='form.get("start").invalid && !form.get("now").value'>Unesite datum početka</mat-error>
+            <mat-form-field>
+                <input type="datetime-local" matInput formControlName='end' placeholder="Datum kraja">
+                <br />
+            </mat-form-field>
+            <br/>
+                <mat-label>Bez kraja?</mat-label>
+                <input type="checkbox" formControlName='endless'>
+                <mat-error *ngIf='form.get("end").invalid && !form.get("endless").value'>Unesite datum kraja
+                </mat-error>
+            <mat-form-field>
+                <textarea matInput rows="4" formControlName='description' placeholder="Opis dogadjaja"></textarea>
+            </mat-form-field>
+            <div>
+                <button mat-button matStepperNext>Sljedeći korak</button>
+            </div>
+        </form>
+    </mat-step>
+    <mat-step  label="Odaberite učesnike">
+        <form [formGroup]="secondFormGroup">
+            <table mat-table [dataSource]="following" *ngIf='following.length > 0 && !secondFormGroup.get("javni").value'>
+                <ng-container matColumnDef="naziv">
+                    <th mat-header-cell *matHeaderCellDef>Korisničko ime</th>
+                    <td mat-cell *matCellDef="let element"> {{element.username}}</td>
+                </ng-container>
+                <ng-container matColumnDef="dodaj">
+                    <th mat-header-cell *matHeaderCellDef></th>
+                    <td mat-cell *matCellDef="let element"><button mat-raised-button *ngIf='!added.includes(element._id)' (click)='addUser(element._id)'>Dodaj</button></td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="columndefs"></tr>
+                <tr mat-row *matRowDef="let row; columns: columndefs;"></tr>
+            </table>
+            <p *ngIf='following.length == 0' style="text-align: center;">Ne pratite nikoga.</p>
+            <br/>
+            <br/>
+                <mat-label>Javni dogadjaj?</mat-label>
+                <input type="checkbox" formControlName='javni'>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button (click)='kreiraj()'>Kreiraj Dogadjaj</button>
+            </div>
+        </form>
+    </mat-step>
+</mat-horizontal-stepper>

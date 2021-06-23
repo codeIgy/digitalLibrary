@@ -1,0 +1,64 @@
+<mat-card>
+    <form (submit)='register()' [formGroup]='form'>
+        <mat-form-field>
+            <input matInput type="text" formControlName= "name" placeholder="Ime">
+            <mat-error *ngIf='form.get("name").invalid'>Unesite ime.</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="text" formControlName='lastName' placeholder="Prezime">
+            <mat-error *ngIf = 'form.get("lastName").invalid'>Unesite prezime.</mat-error>
+        </mat-form-field>
+        <div>
+            <button mat-stroked-button type="button" (click)='photo.click()'>Izaberi sliku</button>
+            <input type="file" #photo (change)="imagePicked($event)">
+        </div>
+        <!--<div class="error">
+            <p *ngIf = 'form.get("image").invalid && (form.touched || form.dirty)'>Lozinke se ne poklapaju.</p>
+        </div>-->
+        <mat-form-field>
+            <input matInput type="text" formControlName='username' placeholder="Korisničko ime">
+            <mat-error *ngIf='form.get("username").invalid'>Unesite korisničko ime.</mat-error>
+            <!--Dodati dio u slučaju da nije jedinstveno-->
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="password" formControlName='password' placeholder="Lozinka">
+            <mat-error *ngIf='form.get("password").invalid'>Minimalno 7 karaktera, bar jedno veliko slovo,
+                bar jedan broj, bar jedan specijalan karakter i da počne sa slovom.
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="password" formControlName='passwordConfirmation' placeholder="Ponovite lozinku">
+        </mat-form-field>
+        <div class="error">
+            <p *ngIf = 'form.errors?.nonMatch && (form.touched || form.dirty)'>Lozinke se ne poklapaju.</p>
+        </div>
+        <mat-form-field>
+            <input matInput type="date" formControlName='date' placeholder="Datum rođenja">
+            <mat-error *ngIf = 'form.get("date").invalid'>Unesite datum rođenja.</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="text" formControlName='city' placeholder="Grad">
+            <mat-error *ngIf = 'form.get("city").invalid'>Unesi grad.</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="text" formControlName='country' placeholder="Država">
+            <mat-error *ngIf = 'form.get("country").invalid'>Unesi državu.</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput email type="email" formControlName='email' placeholder="E-mail adresa">
+            <!--Dodati dio u slučaju da nije jedinstveno-->
+        </mat-form-field>
+        <div class="re-captcha">
+            <re-captcha (resolved)="resolved($event)" 
+                formControlName="recaptcha" 
+                  siteKey="6Lfa6sYZAAAAALoqXDg-nFa5reFbE6P2nRIImTXv">  
+            </re-captcha>
+        </div>
+        <div class="error">
+            <p *ngIf='tried'>Uradi Captch-u.</p>
+        </div>
+        <div class="right">
+            <button type="submit" mat-raised-button color='primary'>Registruj se</button>
+        </div>
+    </form>
+</mat-card>

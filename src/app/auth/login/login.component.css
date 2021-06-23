@@ -1,0 +1,41 @@
+mat-card{
+    margin: auto;
+    width: 50%;
+    margin-top: 30px;
+}
+mat-form-field{
+    width: 100%;
+}
+.forgotten{
+    float: right;
+    margin: auto;
+    padding-bottom: 5px;
+}
+p{
+    text-align: center;
+    margin: auto;
+    padding: 10px;
+}
+.separate{
+    width: 100%;
+    padding: 20px;
+}
+
+.center{
+    width: 100%;
+    text-align: center;
+}
+
+.error{
+    font: bold;
+    font-size: smaller;
+    color: red;
+    padding: 0%;
+    margin: 0;
+    width: 100%;
+}
+.error p{
+    margin-bottom: 0%;
+    margin-top: 0%;
+    padding-top: 0%;
+}

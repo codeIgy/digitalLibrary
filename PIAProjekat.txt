@@ -1,0 +1,17 @@
+npm install --save @angular/material
+npm install --save express
+npm install --save-dev nodemon
+npm install --save body-parser
+npm install mongoose
+npm install --save mongoose-unique-validator
+npm install --save multer
+npm install --save bcrypt
+npm install --save jsonwebtoken
+npm install nodemailer --save
+npm install crypto-random-string --save
+npm i -S async
+npm i -S ng-recaptcha
+https://canvasjs.com/download-html5-charting-graphing-library/
+
+digitalnabibliotekapia@gmail.com
+digitalnabibl

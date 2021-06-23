@@ -1,0 +1,25 @@
+<mat-card *ngIf='loggedUser != null && user!=null'>
+    <mat-card-header>
+        <mat-card-title>{{user.username}}</mat-card-title>
+        <mat-card-subtitle>{{user.email}}</mat-card-subtitle>
+        <mat-card-subtitle>Aktivan sada</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image class='image' [src]="user.imagePath" [alt]="user.username">
+    <mat-card-content>
+        <p>
+            Ime i prezime: {{user.name}} {{user.lastname}}
+        </p>
+        <p>
+            Datum rodjenja: {{konvertujDatum(user.date)}}
+        </p>
+        <p>
+            Grad i država: {{user.city}}, {{user.country}}
+        </p>
+    </mat-card-content>
+    <mat-action-row>
+        <button mat-raised-button (click)='zaprati()' *ngIf='!prati'>Zaprati</button>
+        <button mat-raised-button (click)='postaviKaoModerator()' *ngIf='loggedUser.type == "admin" && user.type=="normalni"'>Postavi kao moderatora</button>
+        <button mat-raised-button (click)='postaviKaoNormalni()' *ngIf='loggedUser.type == "admin" && user.type=="moderator"'>Postavi kao regularnog korisnika</button>
+        <button mat-raised-button (click)='otprati()' *ngIf='prati'>Ne prati više</button>
+    </mat-action-row>
+</mat-card>

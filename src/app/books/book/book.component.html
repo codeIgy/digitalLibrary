@@ -1,0 +1,43 @@
+<mat-card *ngIf='book != null'>
+    <mat-card-header>
+        <mat-card-title>{{book.title}}</mat-card-title>
+        <mat-card-subtitle>{{book.authors}}, {{konvertujDatum(book.issueDate)}}</mat-card-subtitle>
+        <mat-card-subtitle>{{ispisiZanrove(book.genre)}}</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image class='image' [src]="book.imagePath" [alt]="book.title">
+    <mat-card-content>
+        <p>
+            {{book.description}}
+        </p>
+        <br/>
+        <br/>
+        <div style="text-align: right; border-top: black;">
+            <p *ngIf='book.averageScore != 0'>
+                Prosecna ocena: {{book.averageScore}}
+            </p>
+            <p *ngIf='book.averageScore == 0'>
+                Prosecna ocena: Nema ocena za datu knjigu.
+            </p>
+        </div>
+    </mat-card-content>
+    <mat-card-actions>
+    </mat-card-actions>
+</mat-card>
+<br/>
+<h2 style="margin: auto;text-align: center;" *ngIf='book !=null && comments.length > 0'>Komentari:
+</h2>
+<br/>
+<br/>
+<br/>
+<p style="margin: auto;text-align: center;" *ngIf='book !=null && comments.length == 0'>Nema komentara za datu knjigu
+</p>
+<mat-card *ngIf='book != null && comments.length > 0'>
+    <mat-expansion-panel *ngFor='let comment of comments'>
+        <mat-expansion-panel-header>Anonimus &nbsp; - &nbsp;  ocjena: {{comment.score}}</mat-expansion-panel-header>
+        <p style="text-align: left;">{{comment.comment}}</p>
+    </mat-expansion-panel>
+</mat-card>
+<p *ngIf='book == null && loaded' style="margin: auto;">Link je nevažeći!</p>
+<br/>
+<br/>
+<br/>

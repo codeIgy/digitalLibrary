@@ -1,0 +1,24 @@
+<h2 style="text-align: center;">Dodaj žanr</h2>
+<form>
+    <mat-card>
+    <mat-form-field>
+        <input type="text" matInput [(ngModel)] = 'naziv' placeholder="Naziv" name="naziv">
+    </mat-form-field>
+    <button mat-raised-button (click)='dodaj()'>Dodaj žanr</button> 
+</mat-card>
+</form>
+<p style="text-align: center;color: red;">{{poruka}}</p>
+<h2 style="text-align: center;">Žanrovi:</h2>
+<table mat-table [dataSource]="genres" *ngIf='genres.length > 0'>
+    <ng-container matColumnDef="naziv">
+        <th mat-header-cell *matHeaderCellDef>Naziv žanra</th>
+        <td mat-cell *matCellDef="let element">{{element.name}}</td>
+    </ng-container>
+    <ng-container matColumnDef="akcija">
+        <th mat-header-cell *matHeaderCellDef>Izbriši</th>
+        <td mat-cell *matCellDef="let element"><button mat-button (click)='obrisi(element._id)'>Izbriši</button></td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columndefs"></tr>
+    <tr mat-row *matRowDef="let row; columns: columndefs;"></tr>
+</table>

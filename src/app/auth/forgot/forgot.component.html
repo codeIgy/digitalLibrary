@@ -1,0 +1,14 @@
+<mat-card>
+    <form (submit)='onSubmit(resetForm)' #resetForm = "ngForm">
+        <mat-form-field>
+            <input matInput required name="email" type="email" placeholder="Unesi vašu e-mail adresu" ngModel>
+        </mat-form-field>
+        <div class="error">
+            <p *ngIf='message === "Ne postoji data email adresa."'>{{message}}</p>
+        </div>
+        <div class="okay" *ngIf='message == "Link za oporavak lozinke poslat na email."'>
+           <p>{{message}}</p>
+        </div>
+        <button mat-raised-button color = 'primary' type="submit">Pošalji link za oporavak lozinke</button>
+    </form>
+</mat-card>

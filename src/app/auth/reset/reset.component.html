@@ -1,0 +1,25 @@
+<mat-card>
+    <form (submit)='reset()' [formGroup]='form'>
+    <mat-form-field>
+        <input matInput type="password" formControlName='password' placeholder="Lozinka">
+        <mat-error *ngIf='form.get("password").invalid'>Minimalno 7 karaktera, bar jedno veliko slovo,
+            bar jedan broj, bar jedan specijalan karakter i da počne sa slovom.
+        </mat-error>
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput type="password" formControlName='passwordConfirmation' placeholder="Ponovite lozinku">
+    </mat-form-field>
+    <div class="error">
+        <p *ngIf = 'form.errors?.nonMatch && (form.touched || form.dirty)'>Lozinke se ne poklapaju.</p>
+    </div>
+    <div class='okay' *ngIf='message==="Lozinka je uspješno promijenjena!"'>
+        <p>{{message}}</p>
+    </div>
+    <div class='error' *ngIf='message==="Došlo je do greške - Pokušajte opet."'>
+        <p>{{message}}</p>
+    </div>
+    <div>
+        <button type="submit" mat-raised-button color='primary'>Promijeni lozinku</button>
+    </div>
+</form>
+</mat-card>

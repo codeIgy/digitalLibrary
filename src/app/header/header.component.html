@@ -1,0 +1,33 @@
+<mat-toolbar color = 'primary'>
+    <a routerLink='reguser'>Digitalna biblioteka</a>
+    <span class="spacer"></span>
+    <ul>
+        <li *ngIf='user==null'>
+            <a mat-button  routerLink='/register'>Registracija</a>
+        </li>
+        <li *ngIf='user!=null'>
+            <a mat-button routerLink='/addbook'>Dodaj knjigu</a>
+        </li>
+        <li *ngIf='user!=null'>
+            <a mat-button routerLink='/addEvent'>Dodaj dogadjaj</a>
+        </li>
+        <li *ngIf='user!=null'>
+            <a mat-button routerLink='/events'>Pregled dogadjaja</a>
+        </li>
+        <li *ngIf='user!=null'>
+            <a mat-button routerLink='/resetLogin'>Promijeni lozinku</a>
+        </li>
+        <li *ngIf='user!=null && user.type!="normalni"'>
+            <a mat-button routerLink='/odobriKnjige'>Odobri knjige</a>
+        </li>
+        <li *ngIf='user!=null && user.type == "admin"'>
+            <a mat-button routerLink='/odobriKorisnike'>Odobri korisnike</a>
+        </li>
+        <li *ngIf='user!=null && user.type == "admin"'>
+            <a mat-button routerLink='/zanrovi'>Upravljanje zanrovima</a>
+        </li>
+        <li *ngIf='user!=null'>
+            <button mat-button (click)='logout()'>Odjavi se</button>
+        </li>
+    </ul>
+</mat-toolbar>

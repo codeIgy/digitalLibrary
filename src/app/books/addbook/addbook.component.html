@@ -1,0 +1,32 @@
+<mat-card>
+    <form (submit)='add()' [formGroup]='form'>
+        <div>
+            <button mat-stroked-button type="button" (click)='photo.click()'>Izaberi sliku</button>
+            <input type="file" #photo (change)="imagePicked($event)">
+        </div>
+        <mat-form-field>
+            <input type="text" matInput formControlName='title' placeholder="Naziv knjige">
+            <mat-error *ngIf='form.get("title").invalid'>Unesite naziv knjige</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input type="text" matInput formControlName='author' placeholder="Autor(i)">
+            <mat-error *ngIf='form.get("author").invalid'>Unesite autora knjige.</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input type="date" matInput formControlName='issueDate' placeholder="Datum izdavanja">
+            <mat-error *ngIf='form.get("issueDate").invalid'>Unesite datum izdavanja knjige.</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Žanr</mat-label>
+            <mat-select formControlName='genre' multiple>
+                <mat-option *ngFor='let gen of genres' [value]='gen._id'>
+                    {{gen.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <textarea matInput rows="4" formControlName='description' placeholder="Opis knjige"></textarea>
+        </mat-form-field>
+        <button mat-raised-button color='accent' type="submit">Dodaj knjigu</button>
+    </form>
+</mat-card>

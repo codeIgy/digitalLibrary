@@ -1,0 +1,119 @@
+<mat-card *ngIf='book != null && !change'>
+    <mat-card-header>
+        <mat-card-title>{{book.title}}</mat-card-title>
+        <mat-card-subtitle>{{book.authors}}, {{konvertujDatum(book.issueDate)}}</mat-card-subtitle>
+        <mat-card-subtitle>{{ispisiZanrove(book.genre)}}</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image class='image' [src]="book.imagePath" [alt]="book.title">
+    <mat-card-content>
+        <p>
+            {{book.description}}
+        </p>
+        <br />
+        <br />
+        <div style="text-align: right; border-top: black;">
+            <p *ngIf='book.averageScore != 0'>
+                Prosecna ocjena: {{book.averageScore}}
+            </p>
+            <p *ngIf='book.averageScore == 0'>
+                Prosecna ocena: Nema ocena za datu knjigu.
+            </p>
+        </div>
+        <form *ngIf='status=="cita"'>
+            <mat-form-field>
+                Stranica/Broj stranica: <input type="number" matInput [(ngModel)]='page' name='page'>
+            </mat-form-field>
+            /
+            <mat-form-field>
+                <input type="number" matInput [(ngModel)]='size' name="size">
+            </mat-form-field>
+            <button (click)='changePageAndSize()' mat-button>Ažuriraj</button>
+        </form>
+        <br />
+        <mat-progress-bar *ngIf='status == "cita"' [value]='page*1.0/size*100' mode='determinate'></mat-progress-bar>
+
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button (click)='addToRead()'
+            *ngIf='status != "za_citanje" && status !="cita" && status != "procitao" && book.odobrena'>Dodaj u listu za citanje</button>
+        <button mat-button (click)='removeToRead()' *ngIf='status=="za_citanje" && book.odobrena'>Izbaci iz liste za citanje</button>
+        <button mat-button (click)='startReading()' *ngIf='status != "cita" && status !="procitao" && book.odobrena'>Počni da
+            čitaš</button>
+        <button mat-button (click)='finished()' *ngIf='status=="cita" && book.odobrena'>Završio sa čitanjem</button>
+        <button mat-button (click)='changeBook()' *ngIf='user.type == "admin"'>Izmjeni</button>
+    </mat-card-actions>
+</mat-card>
+<br/>
+<br/>
+<mat-card *ngIf='user != null && user.type == "admin" && change'>
+    <form (submit)='update()' [formGroup]='form'>
+        <div>
+            <button mat-stroked-button type="button" (click)='photo.click()'>Izaberi sliku</button>
+            <input type="file" #photo (change)="imagePicked($event)">
+        </div>
+        <mat-form-field>
+            <input type="text" matInput formControlName='title' placeholder="Naziv knjige">
+            <mat-error *ngIf='form.get("title").invalid'>Unesite naziv knjige</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input type="text" matInput formControlName='author' placeholder="Autor(i)">
+            <mat-error *ngIf='form.get("author").invalid'>Unesite autora knjige.</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input type="date" matInput formControlName='issueDate' placeholder="Datum izdavanja">
+            <mat-error *ngIf='form.get("issueDate").invalid'>Unesite datum izdavanja knjige.</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Žanr</mat-label>
+            <mat-select formControlName='genre' multiple>
+                <mat-option *ngFor='let gen of genres' [value]='gen._id'>
+                    {{gen.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+            <textarea matInput rows="4" formControlName='description' placeholder="Opis knjige"></textarea>
+        </mat-form-field>
+        <button mat-raised-button color='accent' type="submit">Sačuvaj</button>
+    </form>
+</mat-card>
+<br/>
+<p style="margin: auto;text-align: center;" *ngIf='book !=null && comments.length == 0'>Nema komentara za datu knjigu
+</p>
+<h2 style="margin: auto;text-align: center;" *ngIf='book !=null && comments.length > 0'>Komentari:
+</h2>
+<mat-card *ngIf='book != null && comments.length > 0'>
+    <mat-expansion-panel *ngFor='let comment of comments'>
+        <mat-expansion-panel-header>{{comment.author.username}}  &nbsp; - &nbsp;  ocjena: {{comment.score}}</mat-expansion-panel-header>
+        <p style="text-align: left;">{{comment.comment}}</p>
+        <mat-action-row *ngIf='user._id==comment.author._id'>
+            <button (click)='editComment(comment)' mat-raised-button>Izmjeni komentar</button>
+        </mat-action-row>
+    </mat-expansion-panel>
+</mat-card>
+<br />
+<mat-card *ngIf='book != null && ((!ocjenio && (page*1.0/size >= 0.5 || status=="procitao")) || editsection)'>
+    <div class='flex-container'>
+        <ng-container *ngFor='let star of stars;'>
+            <app-star
+                (enter)='onStarEnter($event)'
+                (leave)='onStarLeave()'
+                (bigClick)='onStarClick($event)'
+                [starId]='star'
+                [rating]='hoverState || ocjena'
+            >
+            </app-star>
+        </ng-container>
+    </div>
+    <form>
+        <mat-form-field>
+            <textarea matInput placeholder="Unesite komentar" rows='5' name="komentar" [(ngModel)]='komentar'></textarea>
+        </mat-form-field>
+        <button (click)='addComment()' *ngIf='!ocjenio && (page*1.0/size >= 0.5 || status=="procitao")' mat-button>Dodaj komentar</button>
+        <button (click)='edit()' *ngIf='editsection' mat-button>Sačuvaj</button>
+    </form>
+</mat-card>
+<br/>
+<br/>
+<br/>
+<p *ngIf='book == null && loaded' style="margin: auto;text-align: center;">Link je nevažeći!</p>

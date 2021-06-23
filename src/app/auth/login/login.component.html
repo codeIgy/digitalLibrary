@@ -1,0 +1,31 @@
+<mat-card>
+    <div>
+    <form (submit)='onLogin(loginForm)' #loginForm = "ngForm">
+        <mat-form-field>
+            <input matInput required name="username" ngModel type = 'text' placeholder="Korisničko ime" #userInput = "ngModel">
+            <mat-error *ngIf = 'userInput.invalid'>Unesite ispravno korisničko ime.</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput required name="password" ngModel type="password" placeholder="Lozinka" #passInput = 'ngModel'>
+            <mat-error *ngIf = 'passInput.invalid'>Unesite lozinku.</mat-error>
+        </mat-form-field>
+        <div class="error">
+            <p>{{message}}</p>
+        </div> 
+            <button mat-raised-button color = 'primary' type="submit">Prijavi se</button>
+    </form>
+    <div class='forgotten'>
+        <a routerLink = "/forgot">Zaboravljena lozinka?</a>
+    </div> 
+    </div>
+    <div class="separate">
+        <span></span>
+    </div>
+    <p>Nemaš nalog?</p>
+    <mat-card-actions>
+        <div class="center">
+            <a mat-raised-button color='primary' routerLink = '/register'>Registracija</a>
+            <a mat-button color='primary' routerLink = '/guest'>Nastavi kao gost</a>
+        </div>
+    </mat-card-actions>
+</mat-card>

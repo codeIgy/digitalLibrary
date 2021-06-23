@@ -1,0 +1,245 @@
+<mat-card *ngIf='user != null'>
+    <div *ngIf='!change'>
+        <mat-card-header>
+            <mat-card-title>{{user.username}}</mat-card-title>
+            <mat-card-subtitle>{{user.email}}</mat-card-subtitle>
+            <mat-card-subtitle>Aktivan sada</mat-card-subtitle>
+        </mat-card-header>
+        <img mat-card-image class='image' [src]="user.imagePath" [alt]="user.username">
+        <mat-card-content>
+            <p>
+                Ime i prezime: {{user.name}} {{user.lastname}}
+            </p>
+            <p>
+                Datum rodjenja: {{konvertujDatum(user.date)}}
+            </p>
+            <p>
+                Grad i država: {{user.city}}, {{user.country}}
+            </p>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button color="accent" (click)='izmjeni()'>Izmjeni</button>
+        </mat-card-actions>
+    </div>
+    <div *ngIf='change'>
+        <form (submit)='save()' [formGroup]='form'>
+            <mat-form-field>
+                <input matInput type="text" formControlName="name" placeholder="Ime">
+                <mat-error *ngIf='form.get("name").invalid'>Unesite ime.</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="text" formControlName='lastName' placeholder="Prezime">
+                <mat-error *ngIf='form.get("lastName").invalid'>Unesite prezime.</mat-error>
+            </mat-form-field>
+            <div>
+                <button mat-stroked-button type="button" (click)='photo.click()'>Izaberi sliku</button>
+                <input type="file" #photo (change)="imagePicked($event)">
+            </div>
+            <mat-form-field>
+                <input matInput type="text" formControlName='username' placeholder="Korisničko ime">
+                <mat-error *ngIf='form.get("username").invalid'>Unesite korisničko ime.</mat-error>
+                <!--Dodati dio u slučaju da nije jedinstveno-->
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="date" formControlName='date' placeholder="Datum rođenja">
+                <mat-error *ngIf='form.get("date").invalid'>Unesite datum rođenja.</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="text" formControlName='city' placeholder="Grad">
+                <mat-error *ngIf='form.get("city").invalid'>Unesi grad.</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput type="text" formControlName='country' placeholder="Država">
+                <mat-error *ngIf='form.get("country").invalid'>Unesi državu.</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <input matInput email type="email" formControlName='email' placeholder="E-mail adresa">
+                <!--Dodati dio u slučaju da nije jedinstveno-->
+            </mat-form-field>
+            <div class="right">
+                <button mat-button (click)='izmjeni()'>Obustavi</button>
+                <button type="submit" mat-raised-button color='primary'>Sačuvaj</button>
+            </div>
+        </form>
+    </div>
+</mat-card>
+<p *ngIf='user == null' style="text-align: center;">Link je nevažeći!</p>
+<div class=".table">
+    <table mat-table [dataSource]="read" *ngIf='user != null && read.length > 0'>
+        <ng-container matColumnDef="naziv">
+            <th mat-header-cell *matHeaderCellDef>Naziv knjige</th>
+            <td mat-cell *matCellDef="let element"> <a [routerLink]='["/bookreg",element._id]'>{{element.title}}</a>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="autori">
+            <th mat-header-cell *matHeaderCellDef>Autor(i)</th>
+            <td mat-cell *matCellDef="let element"> {{element.authors}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columndefs2"></tr>
+        <tr mat-row *matRowDef="let row; columns: columndefs2;"></tr>
+    </table>
+    <mat-paginator [length]="readTotal" [pageSize]="readPageSize" [pageSizeOptions]="pageSizeOptions"
+        (page)="onChangedPageR($event)" *ngIf="read.length > 0 && user !=null"></mat-paginator>
+</div>
+<p style="text-align: center;" *ngIf="read.length==0 && user !=null">Nema pročitanih knjiga!</p>
+<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<div class=".table">
+    <table mat-table [dataSource]="isReading" *ngIf='user != null && isReading.length > 0'>
+        <ng-container matColumnDef="naziv">
+            <th mat-header-cell *matHeaderCellDef>Naziv knjige</th>
+            <td mat-cell *matCellDef="let element"> <a [routerLink]='["/bookreg",element._id]'>{{element.title}}</a>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="autori">
+            <th mat-header-cell *matHeaderCellDef>Autor(i)</th>
+            <td mat-cell *matCellDef="let element"> {{element.authors}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columndefs2"></tr>
+        <tr mat-row *matRowDef="let row; columns: columndefs2;"></tr>
+    </table>
+    <mat-paginator [length]="isReadingTotal" [pageSize]="isReadingPageSize" [pageSizeOptions]="pageSizeOptions"
+        (page)="onChangedPageIR($event)" *ngIf="isReading.length > 0 && user !=null"></mat-paginator>
+</div>
+<p style="text-align: center;" *ngIf="isReading.length==0 && user !=null">Nema knjiga koje se trenutno čitaju!</p>
+<div class=".table">
+    <table mat-table [dataSource]="toRead" *ngIf='user != null && toRead.length > 0'>
+        <ng-container matColumnDef="naziv">
+            <th mat-header-cell *matHeaderCellDef>Naziv knjige</th>
+            <td mat-cell *matCellDef="let element"> <a [routerLink]='["/bookreg",element._id]'>{{element.title}}</a>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="autori">
+            <th mat-header-cell *matHeaderCellDef>Autor(i)</th>
+            <td mat-cell *matCellDef="let element"> {{element.authors}} </td>
+        </ng-container>
+        <ng-container matColumnDef="ukloni">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let element">
+                <button (click)='ukloni(element)' mat-button>Ukloni sa liste</button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columndefs1"></tr>
+        <tr mat-row *matRowDef="let row; columns: columndefs1;"></tr>
+    </table>
+    <mat-paginator [length]="toReadTotal" [pageSize]="toReadPageSize" [pageSizeOptions]="pageSizeOptions"
+        (page)="onChangedPageTR($event)" *ngIf="toRead.length > 0 && user !=null"></mat-paginator>
+        <p style="text-align: center;" *ngIf="toRead.length==0 && user != null">Nema knjiga na listi za čitanje!</p>
+</div>
+<br/>
+<br/>
+<h2 style="text-align: center;">Vaši komentari:</h2>
+<mat-card *ngIf='user != null && comments.length > 0'>
+    <mat-expansion-panel *ngFor='let comment of comments'>
+        <mat-expansion-panel-header><a [routerLink]='["/bookreg",comment.book._id]'>{{comment.book.title}}</a></mat-expansion-panel-header>
+        <p style="text-align: left;">{{comment.comment}}</p>
+    </mat-expansion-panel>
+</mat-card>
+<br/>
+<br/>
+<h2 style="text-align: center;">Obaviještenja:</h2>
+<mat-card *ngIf='user!=null'>
+    <mat-card-content>
+        <p style="text-align: left;" *ngFor='let alert of alerts'>
+            <a [routerLink]='["/user",alert.author._id]'>{{alert.author.username}}</a> je prokomentarisao <a [routerLink]='["/bookreg",alert.book._id]'>{{alert.book.title}}</a>.
+        </p>
+    </mat-card-content>
+</mat-card>
+<br/>
+<h2 style="text-align: center;">Pretraga korisnika</h2>
+<br/>
+<mat-card>
+    <form (submit)='searchUsers(form2)' #form2='ngForm'>
+        <mat-form-field>
+            <input matInput type="text" ngModel name='name' placeholder="Ime">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="text" ngModel name='lastname' placeholder="Prezime">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="text" ngModel name='username' placeholder="Korisničko ime">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="text" ngModel name='email' placeholder="Email">
+        </mat-form-field>
+        <button mat-raised-button color='primary' type='submit'>Pretraži</button>
+    </form>
+</mat-card>
+<br/>
+<br/>
+<table mat-table [dataSource]="searchedUsers" *ngIf='searchedUsers.length > 0'>
+    <ng-container matColumnDef="ime">
+        <th mat-header-cell *matHeaderCellDef>Ime</th>
+        <td mat-cell *matCellDef="let element"> {{element.name}}</td>
+    </ng-container>
+    <ng-container matColumnDef="prezime">
+        <th mat-header-cell *matHeaderCellDef>Prezime</th>
+        <td mat-cell *matCellDef="let element"> {{element.lastname}} </td>
+    </ng-container>
+    <ng-container matColumnDef="username">
+        <th mat-header-cell *matHeaderCellDef>Korisničko ime</th>
+        <td mat-cell *matCellDef="let element"><a [routerLink]='["/user",element._id]'>{{element.username}}</a></td>
+    </ng-container>
+    <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>E-adresa</th>
+        <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columndefs3"></tr>
+    <tr mat-row *matRowDef="let row; columns: columndefs3;"></tr>
+</table>
+<br/>
+<h2 style="text-align: center;">Pretraga knjiga</h2>
+<br/>
+<mat-card>
+    <form (submit)='search(form1)' #form1='ngForm'>
+        <mat-form-field>
+            <input matInput type="text" ngModel name='title' placeholder="Naziv">
+        </mat-form-field>
+        <mat-form-field>
+            <input matInput type="text" ngModel name='author' placeholder="Autor">
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Žanr</mat-label>
+            <mat-select ngModel name='genre'>
+                <mat-option value='Svi'>
+                    Svi
+                </mat-option>
+                <mat-option *ngFor='let gen of genres' [value]='gen._id'>
+                    {{gen.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button mat-raised-button color='primary' type='submit'>Pretraži</button>
+    </form>
+</mat-card>
+<br/>
+<br/>
+<div style="margin: auto;text-align: center;">
+<a mat-button routerLink='/addbook' style="text-align: center; margin: auto;" *ngIf='searched && resultBooks.length==0'>Dodaj knjigu</a>
+</div>
+<br/>
+<table mat-table [dataSource]="resultBooks" *ngIf='resultBooks.length > 0'>
+    <ng-container matColumnDef="naziv">
+        <th mat-header-cell *matHeaderCellDef>Naziv knjige</th>
+        <td mat-cell *matCellDef="let element"> <a [routerLink]='["/bookreg",element._id]'>{{element.title}}</a></td>
+    </ng-container>
+    <ng-container matColumnDef="autori">
+        <th mat-header-cell *matHeaderCellDef>Autor(i)</th>
+        <td mat-cell *matCellDef="let element"> {{element.authors}} </td>
+    </ng-container>
+    <ng-container matColumnDef="zanr">
+        <th mat-header-cell *matHeaderCellDef>Žanr</th>
+        <td mat-cell *matCellDef="let element">{{ispisiZanr(element?.genre)}}</td>
+    </ng-container>
+    <ng-container matColumnDef="datum">
+        <th mat-header-cell *matHeaderCellDef>Datum izdavanja</th>
+        <td mat-cell *matCellDef="let element"> {{konvertujDatum(element.issueDate)}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columndefs"></tr>
+    <tr mat-row *matRowDef="let row; columns: columndefs;"></tr>
+</table>
+
